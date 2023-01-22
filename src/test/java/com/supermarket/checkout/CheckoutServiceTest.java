@@ -10,11 +10,23 @@ import static org.junit.Assert.assertThrows;
 
 public class CheckoutServiceTest {
     @Test
-    public void should_AddProductToBasket() {
+    public void should_AddProductsToBasket() {
+        CheckoutService checkoutService = new CheckoutService();
+        Item itemA = new Item("A",50);
+        Item itemB = new Item("A",50);
+
+        checkoutService.scanItem(itemA);
+        checkoutService.scanItem(itemB);
+        assertEquals(Map.of(itemA, 1, itemB, 1), checkoutService.getItemsInBasket());
+    }
+
+    @Test
+    public void should_IncreaseQuantityEachTimeItemIsScanned() {
         CheckoutService checkoutService = new CheckoutService();
         Item item = new Item("A",50);
         checkoutService.scanItem(item);
-        assertEquals(Map.of(item, 1), checkoutService.getItemsInBasket());
+        checkoutService.scanItem(item);
+        assertEquals(Map.of(item, 2), checkoutService.getItemsInBasket());
     }
 
     @Test
