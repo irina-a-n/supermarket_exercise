@@ -2,7 +2,8 @@ package com.supermarket.checkout;
 
 import com.supermarket.checkout.model.Item;
 
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PromotionsService {
 
@@ -45,6 +46,29 @@ public class PromotionsService {
         eligibleItemsMap.put(item1MealDeal, qty1- noMealDeals);
         eligibleItemsMap.put(item2MealDeal, qty2 - noMealDeals);
         return eligibleItemsMap;
+    }
+
+    static int computePriceDiffFromMealDealList(Map<Item, Integer> eligibleItemsMap, Set<Item> itemsInMealDeal, int mealDealPrice) {
+        if (eligibleItemsMap.keySet().containsAll(itemsInMealDeal)) {
+            int noMealDeals = Collections.min(eligibleItemsMap.keySet().stream().filter(x -> itemsInMealDeal.contains(x))
+                    .map(x -> eligibleItemsMap.get(x)).collect(Collectors.toSet()));
+            Map<Item, Integer> mapOfMealDealItems = eligibleItemsMap.keySet().stream().filter(x -> itemsInMealDeal.contains(x))
+                    .collect(Collectors.toMap(x -> x, eligibleItemsMap::get));
+
+            int priceDiff = -Computation.computeTotalPrice(mapOfMealDealItems) + noMealDeals * mealDealPrice
+                    + Computation.computePriceWhenQtyDecreasedByN(mapOfMealDealItems, noMealDeals);
+            return priceDiff;
+        }
+        else return 0;
+    }
+
+    static Map<Item, Integer> excludeMealDealItemsList(Map<Item, Integer> eligibleItemsMap, Set<Item> itemsInMealDeal) {
+        if (eligibleItemsMap.keySet().containsAll(itemsInMealDeal)) {
+            int noMealDeals = Collections.min(eligibleItemsMap.values());
+            itemsInMealDeal.forEach(item -> eligibleItemsMap.compute(item, (k, v) -> v - noMealDeals));
+        }
+            return eligibleItemsMap;
+
     }
 
 }

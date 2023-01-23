@@ -7,9 +7,16 @@ import java.util.function.BiFunction;
 
 public class Computation {
     private static BiFunction<Item, Integer, Integer> computeCost = (item, qty) -> item.getPrice() * qty;
+
     public static int computeTotalPrice(Map<Item, Integer> mapItemQty) {
         return mapItemQty.entrySet().stream()
                 .map(x -> computeCost.apply(x.getKey(), x.getValue()))
+                .reduce(0, Integer::sum);
+    }
+
+    public static int computePriceWhenQtyDecreasedByN(Map<Item, Integer> mapItemQty, int n) {
+        return mapItemQty.entrySet().stream()
+                .map(x -> computeCost.apply(x.getKey(), x.getValue()-n))
                 .reduce(0, Integer::sum);
     }
 

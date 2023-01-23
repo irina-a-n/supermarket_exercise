@@ -4,6 +4,7 @@ import com.supermarket.checkout.model.Item;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 public class CheckoutService {
@@ -17,6 +18,8 @@ public class CheckoutService {
     private static final Item buy3get1FreeItem = new Item("C", 25);
     private static final Item item1MealDeal = new Item("D", 150);
     private static final Item item2MealDeal = new Item("E", 200);
+
+    private static  final Set<Item> itemsInMealDeal = Set.of(item1MealDeal, item2MealDeal);
 
     private static final int MEAL_DEAL_PRICE = 300;
 
@@ -49,9 +52,9 @@ public class CheckoutService {
         int buyNget1FreePromotionDiff = PromotionsService.computePriceDiffFor3For1Promotion(itemsEligibleForPromotion, buy3get1FreeItem, BUY_N_GET_1_FREE_N);
         itemsEligibleForPromotion = PromotionsService.excludeItemsIncludedInMultipleNPromotion(itemsEligibleForPromotion, buy3get1FreeItem, BUY_N_GET_1_FREE_N);
 
-        int mealDealDiff = PromotionsService.computePriceDiffFromMealDeal(itemsEligibleForPromotion, item1MealDeal, item2MealDeal, MEAL_DEAL_PRICE);
-        itemsEligibleForPromotion = PromotionsService.excludeMealDealItems(itemsEligibleForPromotion, item1MealDeal, item2MealDeal);
-
+        int mealDealDiff = PromotionsService.computePriceDiffFromMealDealList(itemsEligibleForPromotion, itemsInMealDeal, MEAL_DEAL_PRICE);
+        itemsEligibleForPromotion = PromotionsService.excludeMealDealItemsList(itemsEligibleForPromotion, itemsInMealDeal);
+        
         int totalPriceWithPromotionsApplied = priceWithoutPromotions + multiPricePromotionsDiff + buyNget1FreePromotionDiff + mealDealDiff;
         return totalPriceWithPromotionsApplied;
     }

@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
@@ -112,6 +113,22 @@ public class PromotionsServiceTest {
     }
 
     @Test
+    public void should_ExcludeItemsIncludedInMealDeal() {
+        Item itemA = new Item("A", 50);
+        Item itemB = new Item("B", 75);
+        Item itemC = new Item("C", 25);
+        Item itemD = new Item("D", 150);
+        Item itemE = new Item("E", 200);
+
+        Map<Item, Integer> map = new HashMap<>(Map.of(itemA, 2, itemB, 2,  itemC , 8, itemD, 3, itemE, 4));
+
+        Map<Item, Integer> expectedMap = Map.of(itemA, 2, itemB, 2,  itemC , 8, itemD, 0, itemE, 1);
+        Map<Item, Integer> actualMap = PromotionsService.excludeMealDealItems(map, itemE, itemD);
+
+        assertEquals(expectedMap, actualMap);
+    }
+
+    @Test
     public void should_ComputeDiffForMealDealPromotion() {
         Item itemA = new Item("A", 50);
         Item itemB = new Item("B", 75);
@@ -123,7 +140,37 @@ public class PromotionsServiceTest {
         int expected = -3*150 -2*200  + 300 * 2 + 150 ;
         int actual = PromotionsService.computePriceDiffFromMealDeal(map, itemD, itemE, MEAL_DEAL_PRICE);
         assertEquals(expected, actual);
+    }
 
+    @Test
+    public void should_ComputeDiffForMealDealPromotion2() {
+        Item itemA = new Item("A", 50);
+        Item itemB = new Item("B", 75);
+        Item itemC = new Item("C", 25);
+        Item itemD = new Item("D", 150);
+        Item itemE = new Item("E", 200);
+        int MEAL_DEAL_PRICE = 300;
+        Map<Item, Integer> map = Map.of(itemA, 2, itemB, 4, itemC , 1, itemD, 3, itemE, 2);
+        int expected = -3*150 -2*200  + 300 * 2 + 150 ;
+        int actual = PromotionsService.computePriceDiffFromMealDealList(map, Set.of(itemE, itemD), MEAL_DEAL_PRICE);
+        assertEquals(expected, actual);
+
+    }
+
+    @Test
+    public void should_ExcludeItemsIncludedInMealDeal2() {
+        Item itemA = new Item("A", 50);
+        Item itemB = new Item("B", 75);
+        Item itemC = new Item("C", 25);
+        Item itemD = new Item("D", 150);
+        Item itemE = new Item("E", 200);
+
+        Map<Item, Integer> map = new HashMap<>(Map.of(itemA, 2, itemB, 2,  itemC , 8, itemD, 3, itemE, 4));
+
+        Map<Item, Integer> expectedMap = Map.of(itemA, 0, itemB, 0,  itemC , 6, itemD, 3, itemE, 4);
+        Map<Item, Integer> actualMap = PromotionsService.excludeMealDealItemsList(map, Set.of(itemA, itemB, itemC));
+
+        assertEquals(expectedMap, actualMap);
     }
 
 }
