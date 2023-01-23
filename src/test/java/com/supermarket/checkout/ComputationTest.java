@@ -25,7 +25,7 @@ public class ComputationTest {
     public void should_ComputePriceOfItemsWithQuantityDecreasedByMinQty() {
         Item itemA = new Item("A", 50);
         Item itemB = new Item("B", 75);
-        Item itemC = new Item("B", 25);
+        Item itemC = new Item("C", 25);
         Map<Item, Integer> map = Map.of(itemA, 2, itemB, 3, itemC , 1);
         int minQty = 1;
         int expectedTotalPrice = 1*50 + 2*75 + 0*25 ;

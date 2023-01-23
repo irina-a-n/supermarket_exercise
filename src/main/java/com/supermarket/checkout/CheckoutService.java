@@ -54,7 +54,7 @@ public class CheckoutService {
 
         int mealDealDiff = PromotionsService.computePriceDiffFromMealDealList(itemsEligibleForPromotion, itemsInMealDeal, MEAL_DEAL_PRICE);
         itemsEligibleForPromotion = PromotionsService.excludeMealDealItemsList(itemsEligibleForPromotion, itemsInMealDeal);
-        
+
         int totalPriceWithPromotionsApplied = priceWithoutPromotions + multiPricePromotionsDiff + buyNget1FreePromotionDiff + mealDealDiff;
         return totalPriceWithPromotionsApplied;
     }
