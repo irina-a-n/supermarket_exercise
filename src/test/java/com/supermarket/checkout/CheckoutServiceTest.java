@@ -98,7 +98,7 @@ public class CheckoutServiceTest {
     @Test
     public void should_computeFinalPriceOfBasket_When_Both_NItemBForY_And_BuyNItemCGet1Free_Applied() {
         // ItemB, N = 2, Y = 125
-        // ItemB, N = 2, Y = 125
+        // ItemC, N = 3
         CheckoutService checkoutService = new CheckoutService();
         Item itemA = new Item("A", 50);
         Item itemB = new Item("B", 75);
@@ -116,6 +116,8 @@ public class CheckoutServiceTest {
 
     @Test
     public void should_computeFinalPriceOfBasket_When_Both_NItemBForY_And_BuyNItemCGet1Free_Applied_2() {
+        // ItemB, N = 2, Y = 125
+        // ItemC, N = 3
         CheckoutService checkoutService = new CheckoutService();
         Item itemA = new Item("A", 50);
         Item itemB = new Item("B", 75);
@@ -129,6 +131,32 @@ public class CheckoutServiceTest {
         checkoutService.scanItem(itemC);
         int actualTotalPrice = checkoutService.computeFinalPrice();
         int expectedTotalPrice = 50 + 125 + 75 + 50;
+        assertEquals(expectedTotalPrice, actualTotalPrice);
+    }
+
+    @Test
+    public void should_computeFinalPriceOfBasket_When_AllPromotions_Applied_() {
+        // MEAL_DEAL_PRICE = 300, ItemD, ItemE
+        CheckoutService checkoutService = new CheckoutService();
+        Item itemA = new Item("A", 50);
+        Item itemB = new Item("B", 75);
+        Item itemC = new Item("C", 25);
+        Item itemD = new Item("D", 150);
+        Item itemE = new Item("E", 200);
+        checkoutService.scanItem(itemA);
+        checkoutService.scanItem(itemB);
+        checkoutService.scanItem(itemB);
+        checkoutService.scanItem(itemB);
+        checkoutService.scanItem(itemC);
+        checkoutService.scanItem(itemC);
+        checkoutService.scanItem(itemC);
+        checkoutService.scanItem(itemD);
+        checkoutService.scanItem(itemE);
+        checkoutService.scanItem(itemD);
+        checkoutService.scanItem(itemE);
+        checkoutService.scanItem(itemD);
+        int actualTotalPrice = checkoutService.computeFinalPrice();
+        int expectedTotalPrice = 50 + 125 + 75 + 50 + 2*300 + 150;
         assertEquals(expectedTotalPrice, actualTotalPrice);
     }
 }

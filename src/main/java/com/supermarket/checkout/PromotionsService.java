@@ -25,8 +25,25 @@ public class PromotionsService {
     static Map<Item, Integer> excludeItemsIncludedInMultipleNPromotion(Map<Item, Integer> eligibleItemsMap, Item item, int n) {
         int qty = eligibleItemsMap.getOrDefault(item, 0);
         int r = qty % n;
-        //eligibleItemsMap.compute(item, (i,v) -> r);
         eligibleItemsMap.put(item, r);
+        return eligibleItemsMap;
+    }
+
+    static int computePriceDiffFromMealDeal(Map<Item, Integer> eligibleItemsMap, Item item1MealDeal, Item item2MealDeal, int mealDealPrice) {
+        int qty1 = eligibleItemsMap.getOrDefault(item1MealDeal, 0);
+        int qty2 = eligibleItemsMap.getOrDefault(item2MealDeal, 0);
+        int noMealDeals = Math.min(qty1, qty2);
+        int priceDiff = - Computation.computeTotalPrice(Map.of(item1MealDeal, qty1, item2MealDeal, qty2)) + noMealDeals * mealDealPrice
+                + (qty1 - noMealDeals) * item1MealDeal.getPrice() + (qty2 - noMealDeals) * item2MealDeal.getPrice();
+        return priceDiff;
+    }
+
+    static Map<Item, Integer> excludeMealDealItems(Map<Item, Integer> eligibleItemsMap, Item item1MealDeal, Item item2MealDeal) {
+        int qty1 = eligibleItemsMap.getOrDefault(item1MealDeal, 0);
+        int qty2 = eligibleItemsMap.getOrDefault(item2MealDeal, 0);
+        int noMealDeals = Math.min(qty1, qty2);
+        eligibleItemsMap.put(item1MealDeal, qty1- noMealDeals);
+        eligibleItemsMap.put(item2MealDeal, qty2 - noMealDeals);
         return eligibleItemsMap;
     }
 

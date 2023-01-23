@@ -15,6 +15,11 @@ public class CheckoutService {
 
     private static final int BUY_N_GET_1_FREE_N = 3;
     private static final Item buy3get1FreeItem = new Item("C", 25);
+    private static final Item item1MealDeal = new Item("D", 150);
+    private static final Item item2MealDeal = new Item("E", 200);
+
+    private static final int MEAL_DEAL_PRICE = 300;
+
 
     public CheckoutService() {
         this.itemsInBasket = new HashMap<>();
@@ -35,17 +40,19 @@ public class CheckoutService {
     }
 
     public int computeFinalPrice() {
-        Map<Item, Integer> productsEligibleForPromotions = new HashMap<>(itemsInBasket);
+        Map<Item, Integer> itemsEligibleForPromotion = new HashMap<>(itemsInBasket);
         int priceWithoutPromotions = Computation.computeTotalPrice(itemsInBasket);
 
         int multiPricePromotionsDiff = PromotionsService.computePriceDiffFromMultiPricePromotion(getItemsInBasket(), multiPriceItem, MULTIPRICE_N, MULTIPRICE_PRICE);
-        productsEligibleForPromotions = PromotionsService.excludeItemsIncludedInMultipleNPromotion(productsEligibleForPromotions, multiPriceItem, MULTIPRICE_N);
+        itemsEligibleForPromotion = PromotionsService.excludeItemsIncludedInMultipleNPromotion(itemsEligibleForPromotion, multiPriceItem, MULTIPRICE_N);
 
-        int buyNget1FreePromotionDiff = PromotionsService.computePriceDiffFor3For1Promotion(productsEligibleForPromotions, buy3get1FreeItem, BUY_N_GET_1_FREE_N);
-        productsEligibleForPromotions = PromotionsService.excludeItemsIncludedInMultipleNPromotion(productsEligibleForPromotions, buy3get1FreeItem, BUY_N_GET_1_FREE_N);
+        int buyNget1FreePromotionDiff = PromotionsService.computePriceDiffFor3For1Promotion(itemsEligibleForPromotion, buy3get1FreeItem, BUY_N_GET_1_FREE_N);
+        itemsEligibleForPromotion = PromotionsService.excludeItemsIncludedInMultipleNPromotion(itemsEligibleForPromotion, buy3get1FreeItem, BUY_N_GET_1_FREE_N);
 
-        int totalPriceWithPromotionsApplied = priceWithoutPromotions + multiPricePromotionsDiff +
-                buyNget1FreePromotionDiff;
+        int mealDealDiff = PromotionsService.computePriceDiffFromMealDeal(itemsEligibleForPromotion, item1MealDeal, item2MealDeal, MEAL_DEAL_PRICE);
+        itemsEligibleForPromotion = PromotionsService.excludeMealDealItems(itemsEligibleForPromotion, item1MealDeal, item2MealDeal);
+
+        int totalPriceWithPromotionsApplied = priceWithoutPromotions + multiPricePromotionsDiff + buyNget1FreePromotionDiff + mealDealDiff;
         return totalPriceWithPromotionsApplied;
     }
 }
