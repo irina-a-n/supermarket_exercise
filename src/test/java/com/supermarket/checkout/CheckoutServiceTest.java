@@ -13,7 +13,7 @@ public class CheckoutServiceTest {
     public void should_AddProductsToBasket() {
         CheckoutService checkoutService = new CheckoutService();
         Item itemA = new Item("A",50);
-        Item itemB = new Item("A",50);
+        Item itemB = new Item("B",75);
 
         checkoutService.scanItem(itemA);
         checkoutService.scanItem(itemB);
@@ -26,7 +26,8 @@ public class CheckoutServiceTest {
         Item item = new Item("A",50);
         checkoutService.scanItem(item);
         checkoutService.scanItem(item);
-        assertEquals(Map.of(item, 2), checkoutService.getItemsInBasket());
+        checkoutService.scanItem(item);
+        assertEquals(Map.of(item, 3), checkoutService.getItemsInBasket());
     }
 
     @Test
@@ -63,7 +64,58 @@ public class CheckoutServiceTest {
     }
 
     @Test
-    public void should_computeFinalPriceOfBasket_When_2ItemBFor125Applied() {
+    public void should_computeFinalPriceOfBasket_When_NItemBForY_AppliedOnly() {
+        // ItemB, N = 2, Y = 125
+        CheckoutService checkoutService = new CheckoutService();
+        Item itemA = new Item("A", 50);
+        Item itemB = new Item("B", 75);
+        checkoutService.scanItem(itemA);
+        checkoutService.scanItem(itemB);
+        checkoutService.scanItem(itemB);
+        checkoutService.scanItem(itemB);
+        int actualTotalPrice = checkoutService.computeFinalPrice();
+        int expectedTotalPrice = 50 + 125 + 75  ;
+        assertEquals(expectedTotalPrice, actualTotalPrice);
+    }
+
+    @Test
+    public void should_computeFinalPriceOfBasket_When_BuyNGet1Free_AppliedOnly() {
+        // ItemC, N = 3
+        CheckoutService checkoutService = new CheckoutService();
+        Item itemA = new Item("A", 50);
+        Item itemB = new Item("B", 75);
+        Item itemC = new Item("C", 25);
+        checkoutService.scanItem(itemA);
+        checkoutService.scanItem(itemB);
+        checkoutService.scanItem(itemC);
+        checkoutService.scanItem(itemC);
+        checkoutService.scanItem(itemC);
+        int actualTotalPrice = checkoutService.computeFinalPrice();
+        int expectedTotalPrice = 50 + 75 + 50;
+        assertEquals(expectedTotalPrice, actualTotalPrice);
+    }
+
+    @Test
+    public void should_computeFinalPriceOfBasket_When_Both_NItemBForY_And_BuyNItemCGet1Free_Applied() {
+        // ItemB, N = 2, Y = 125
+        // ItemB, N = 2, Y = 125
+        CheckoutService checkoutService = new CheckoutService();
+        Item itemA = new Item("A", 50);
+        Item itemB = new Item("B", 75);
+        Item itemC = new Item("C", 25);
+        checkoutService.scanItem(itemA);
+        checkoutService.scanItem(itemB);
+        checkoutService.scanItem(itemB);
+        checkoutService.scanItem(itemC);
+        checkoutService.scanItem(itemC);
+        checkoutService.scanItem(itemC);
+        int actualTotalPrice = checkoutService.computeFinalPrice();
+        int expectedTotalPrice = 50 + 125 + 50;
+        assertEquals(expectedTotalPrice, actualTotalPrice);
+    }
+
+    @Test
+    public void should_computeFinalPriceOfBasket_When_Both_NItemBForY_And_BuyNItemCGet1Free_Applied_2() {
         CheckoutService checkoutService = new CheckoutService();
         Item itemA = new Item("A", 50);
         Item itemB = new Item("B", 75);
@@ -73,8 +125,10 @@ public class CheckoutServiceTest {
         checkoutService.scanItem(itemB);
         checkoutService.scanItem(itemB);
         checkoutService.scanItem(itemC);
+        checkoutService.scanItem(itemC);
+        checkoutService.scanItem(itemC);
         int actualTotalPrice = checkoutService.computeFinalPrice();
-        int expectedTotalPrice = 275;
+        int expectedTotalPrice = 50 + 125 + 75 + 50;
         assertEquals(expectedTotalPrice, actualTotalPrice);
     }
 }

@@ -20,4 +20,13 @@ public class ComputationTest {
         assertEquals(expectedTotalPrice, actualTotalPrice);
 
     }
+
+    @Test
+    public void test() {
+        Item itemA = new Item("A", 50);
+        Item itemA2 = new Item("A", 50);
+        Item itemC = new Item("B", 25);
+        assertEquals(itemA, itemA2);
+
+    }
 }
