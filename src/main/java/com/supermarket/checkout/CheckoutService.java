@@ -27,4 +27,12 @@ public class CheckoutService {
         }
         itemsInBasket.merge(item, 1, Integer::sum);
     }
+
+    // To start return total price without considering promotions
+    public int computeFinalPrice() {
+        int totalPriceWithoutPromotionsApplied = Computation.computeTotalPrice(itemsInBasket);
+        return totalPriceWithoutPromotionsApplied;
+    }
+
+
 }

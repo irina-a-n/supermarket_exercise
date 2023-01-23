@@ -41,11 +41,24 @@ public class CheckoutServiceTest {
     }
 
     @Test
-    public void should_returnQuantityAsZero_When_ItemRetrievedIsNotInBasket() {
+    public void should_ReturnQuantityAsZero_When_ItemRetrievedIsNotInBasket() {
         CheckoutService checkoutService = new CheckoutService();
         Item item = new Item("A", 50);
         int actualQuantity = checkoutService.getItemQuantity(item);
         int expectedQuantity = 0;
         assertEquals(expectedQuantity, actualQuantity);
+    }
+
+    @Test
+    public void should_computeFinalPriceOfBasket() {
+        CheckoutService checkoutService = new CheckoutService();
+        Item itemA = new Item("A", 50);
+        Item itemB = new Item("B", 75);
+        checkoutService.scanItem(itemA);
+        checkoutService.scanItem(itemA);
+        checkoutService.scanItem(itemB);
+        int actualTotalPrice = checkoutService.computeFinalPrice();
+        int expectedTotalPrice = 175;
+        assertEquals(expectedTotalPrice, actualTotalPrice);
     }
 }
