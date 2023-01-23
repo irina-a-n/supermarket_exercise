@@ -30,7 +30,9 @@ public class CheckoutService {
 
     // To start return total price without considering promotions
     public int computeFinalPrice() {
-        int totalPriceWithoutPromotionsApplied = Computation.computeTotalPrice(itemsInBasket);
+        Item multiPriceItem = new Item("B", 125);
+        int multiPricePromotionsDiff = PromotionsService.computePriceDiffFromMultiPricePromotion(getItemsInBasket(), multiPriceItem);
+        int totalPriceWithoutPromotionsApplied = Computation.computeTotalPrice(itemsInBasket) + multiPricePromotionsDiff;
         return totalPriceWithoutPromotionsApplied;
     }
 

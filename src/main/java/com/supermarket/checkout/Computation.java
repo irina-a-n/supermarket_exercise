@@ -12,4 +12,5 @@ public class Computation {
                 .map(x -> computeCost.apply(x.getKey(), x.getValue()))
                 .reduce(0, Integer::sum);
     }
+
 }

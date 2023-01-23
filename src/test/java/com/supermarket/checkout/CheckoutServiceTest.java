@@ -50,7 +50,7 @@ public class CheckoutServiceTest {
     }
 
     @Test
-    public void should_computeFinalPriceOfBasket() {
+    public void should_computeFinalPriceOfBasket_When_NoPromotionsApplied() {
         CheckoutService checkoutService = new CheckoutService();
         Item itemA = new Item("A", 50);
         Item itemB = new Item("B", 75);
@@ -59,6 +59,22 @@ public class CheckoutServiceTest {
         checkoutService.scanItem(itemB);
         int actualTotalPrice = checkoutService.computeFinalPrice();
         int expectedTotalPrice = 175;
+        assertEquals(expectedTotalPrice, actualTotalPrice);
+    }
+
+    @Test
+    public void should_computeFinalPriceOfBasket_When_2ItemBFor125Applied() {
+        CheckoutService checkoutService = new CheckoutService();
+        Item itemA = new Item("A", 50);
+        Item itemB = new Item("B", 75);
+        Item itemC = new Item("C", 25);
+        checkoutService.scanItem(itemA);
+        checkoutService.scanItem(itemB);
+        checkoutService.scanItem(itemB);
+        checkoutService.scanItem(itemB);
+        checkoutService.scanItem(itemC);
+        int actualTotalPrice = checkoutService.computeFinalPrice();
+        int expectedTotalPrice = 275;
         assertEquals(expectedTotalPrice, actualTotalPrice);
     }
 }
